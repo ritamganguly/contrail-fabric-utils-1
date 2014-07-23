@@ -1,7 +1,17 @@
 from fabfile.config import testbed
 
 def get_collector_syslog_port():
-    return getattr(testbed, 'collector_syslog_port', None)
+    try:
+        testbed.env.rsyslog_params
+        if testbed.env.rsyslog_params['status'].lower() == 'enable':
+            try:
+                return testbed.env.rsyslog_params['port']
+            except:
+                return 9876 #default port number.
+        else:
+            return None
+    except:
+        return None
 #end get_collector_syslog_port
 
 def get_database_ttl():
